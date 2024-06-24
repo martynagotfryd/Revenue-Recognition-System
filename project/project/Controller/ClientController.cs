@@ -46,6 +46,7 @@ public class ClientController : ControllerBase
             Phone = newClientDto.Phone,
             PESEL = newClientDto.PESEL,
             KRS = newClientDto.KRS,
+ 
             LastName = newClientDto.LastName
         };
 
