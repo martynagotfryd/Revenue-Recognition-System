@@ -13,9 +13,9 @@ public class Discount
     public double Value { get; set; }
     public DateTime Start { get; set; }
     public DateTime End { get; set; }
-    public int ContractId { get; set; }
+    public int IdSoftware { get; set; }
 
-    [ForeignKey(nameof(ContractId))]
-    public Contract Contract { get; set; } = null!;
+    [ForeignKey(nameof(IdSoftware))]
+    public Software Software { get; set; } = null!;
 
 }

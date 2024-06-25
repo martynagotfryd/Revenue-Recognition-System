@@ -12,11 +12,9 @@ public class Software
     public string Name { get; set; } = string.Empty;
     [MaxLength(500)]
     public string Description { get; set; } = string.Empty;
-    [MaxLength(100)]
-    public string Version { get; set; } = string.Empty;
     [MaxLength(50)]
     public string Category { get; set; } = string.Empty;
 
     public ICollection<Discount> Discounts { get; set; } = new HashSet<Discount>();
-    public ICollection<Contract> Contracts { get; set; } = new HashSet<Contract>();
+    public ICollection<SoftwareVersion> Contracts { get; set; } = new HashSet<SoftwareVersion>();
 }

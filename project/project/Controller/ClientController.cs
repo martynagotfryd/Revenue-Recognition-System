@@ -74,6 +74,12 @@ public class ClientController : ControllerBase
 
         return Ok();
     }
+    //
+    // [HttpPost]
+    // public async Task<IActionResult> UpdateCLient(Client client)
+    // {
+    //     
+    // }
 
 
 

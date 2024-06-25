@@ -8,23 +8,18 @@ public class Contract
 {
     [Key]
     public int Id { get; set; }
-    public int ClientId { get; set; }
-    public int SoftwareId { get; set; }
     public DateTime Start { get; set; }
     public DateTime End { get; set; }
     public double Price { get; set; }
     public bool Signed { get; set; }
+    public int IdClient { get; set; }
+    public int IdSoftwareVersion { get; set; }
 
-    [ForeignKey(nameof(ClientId))]
+    [ForeignKey(nameof(IdClient))]
     public Client Client { get; set; } = null!;
-    [ForeignKey(nameof(SoftwareId))]
-    public Software Software { get; set; } = null!;
+    [ForeignKey(nameof(IdSoftwareVersion))]
+    public SoftwareVersion SoftwareVersion { get; set; } = null!;
 
-    public ICollection<Payment> Payments { get; set; } = null!;
+    public ICollection<Payment> Payments { get; set; } = new HashSet<Payment>();
 }
 
-public class Payment
-{
-    public int Id { get; set; }
-    public double Value { get; set; }
-}
