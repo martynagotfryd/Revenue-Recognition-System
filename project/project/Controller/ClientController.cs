@@ -15,29 +15,39 @@ public class ClientController : ControllerBase
         _dbService = dbService;
     }
 
-    [HttpPost]
+    [HttpPost("add")]
     public async Task<IActionResult> AddNewClient(NewClientDTO newClientDto)
     {
-        // Check if client doesnt already exist
+        if (newClientDto.PESEL != null && newClientDto.KRS != null)
+        {
+            return BadRequest("Client can be either individual or company. Put null in proper fields.");
+        }
+        
+        if (newClientDto.PESEL == null && newClientDto.KRS == null)
+        {
+            return BadRequest("Client must be either individual or company. ");
+        }
+        
         if (newClientDto.PESEL != null)
         {
-            if (newClientDto.LastName is null)
-            {
-                return BadRequest("For individual clients last name must be provided.");
-            }
             if (await _dbService.DoesIndividualClientExist(newClientDto.PESEL))
             {
-                return NotFound("Individual client with this Pesel already exist.");
+                return BadRequest("Individual client with this Pesel already exist.");
             }
-        }
-        else if (newClientDto.KRS != null)
-        {
-            if (await _dbService.DoesCompanyClientExist(newClientDto.KRS))
+            
+            if (newClientDto.LastName == null)
             {
-                return NotFound("Company client with this Krs already exist.");
+                return BadRequest("Individual clients must have last name.");
             }
         }
-
+        else
+        {
+            if (newClientDto.LastName != null)
+            {
+                return BadRequest("Company client can't have last name. Put null in last name field.");
+            }
+        }
+        
         var client = new Client()
         {
             Name = newClientDto.Name,
@@ -46,7 +56,6 @@ public class ClientController : ControllerBase
             Phone = newClientDto.Phone,
             PESEL = newClientDto.PESEL,
             KRS = newClientDto.KRS,
- 
             LastName = newClientDto.LastName
         };
 
@@ -55,7 +64,7 @@ public class ClientController : ControllerBase
         return Created();
     }
 
-    [HttpPost]
+    [HttpPost("remove")]
     public async Task<IActionResult> RemoveClient(int id)
     {
         var client = await _dbService.GetClientById(id);
