@@ -1,3 +1,4 @@
+using project.DTOs;
 using project.Models;
 
 namespace project.Repositories;
@@ -13,6 +14,9 @@ public interface IDbService
     // use IsClientIndividual and do soft delete
     Task RemoveIndividualClient(int id);
     // except pesel and krs
-    Task UpdateClientInfo(int id, Client newClient);
+    Task UpdateClientInfo(int id, NewClientDTO newClient);
     Task<Client?> GetClientById(int id);
+    Task<Client?> GetClientByPesel(int pesel);
+    Task<bool> IsClientDeleted(int id);
+    Task UnremoveIndividualClient(int id);
 }

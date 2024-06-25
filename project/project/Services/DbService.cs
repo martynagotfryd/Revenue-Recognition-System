@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using project.Data;
+using project.DTOs;
 using project.Models;
 
 namespace project.Repositories;
@@ -45,22 +46,22 @@ public class DbService : IDbService
         _context.Clients.Update(client);
         await _context.SaveChangesAsync();
     }
+    
+    
 
-    public async Task UpdateClientInfo(int id, Client newClient)
+    public async Task UpdateClientInfo(int id, NewClientDTO newClient)
     {
         var existingClient = await _context.Clients.FindAsync(id);
         
-        if (existingClient != null)
-        {
-            existingClient.Name = newClient.Name;
-            existingClient.Address = newClient.Address;
-            existingClient.Mail = newClient.Mail;
-            existingClient.Phone = newClient.Phone;
-            
-            if (existingClient.KRS == null)
-            {
-                existingClient.LastName = newClient.LastName;
-            }
+       
+        existingClient.Name = newClient.Name; 
+        existingClient.Address = newClient.Address;
+        existingClient.Mail = newClient.Mail; 
+        existingClient.Phone = newClient.Phone;
+        
+        if (existingClient.KRS == null) 
+        { 
+            existingClient.LastName = newClient.LastName;
         }
 
         _context.Clients.Update(existingClient);
@@ -71,5 +72,20 @@ public class DbService : IDbService
     public async Task<Client?> GetClientById(int id)
     {
         return await _context.Clients.FirstOrDefaultAsync(e => e.Id == id);
+    }
+
+    public Task<Client?> GetClientByPesel(int pesel)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> IsClientDeleted(int id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task UnremoveIndividualClient(int id)
+    {
+        throw new NotImplementedException();
     }
 }

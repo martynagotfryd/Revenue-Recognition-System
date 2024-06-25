@@ -16,33 +16,33 @@ public class ClientController : ControllerBase
     }
 
     [HttpPost("add")]
-    public async Task<IActionResult> AddNewClient(NewClientDTO newClientDto)
+    public async Task<IActionResult> AddNewClient(NewClientDTO newClient)
     {
-        if (newClientDto.PESEL != null && newClientDto.KRS != null)
+        if (newClient.PESEL != null && newClient.KRS != null)
         {
             return BadRequest("Client can be either individual or company. Put null in proper fields.");
         }
         
-        if (newClientDto.PESEL == null && newClientDto.KRS == null)
+        if (newClient.PESEL == null && newClient.KRS == null)
         {
             return BadRequest("Client must be either individual or company. ");
         }
         
-        if (newClientDto.PESEL != null)
+        if (newClient.PESEL != null)
         {
-            if (await _dbService.DoesIndividualClientExist(newClientDto.PESEL))
+            if (await _dbService.DoesIndividualClientExist(newClient.PESEL))
             {
                 return BadRequest("Individual client with this Pesel already exist.");
             }
             
-            if (newClientDto.LastName == null)
+            if (newClient.LastName == null)
             {
                 return BadRequest("Individual clients must have last name.");
             }
         }
         else
         {
-            if (newClientDto.LastName != null)
+            if (newClient.LastName != null)
             {
                 return BadRequest("Company client can't have last name. Put null in last name field.");
             }
@@ -50,13 +50,13 @@ public class ClientController : ControllerBase
         
         var client = new Client()
         {
-            Name = newClientDto.Name,
-            Address = newClientDto.Address,
-            Mail = newClientDto.Mail,
-            Phone = newClientDto.Phone,
-            PESEL = newClientDto.PESEL,
-            KRS = newClientDto.KRS,
-            LastName = newClientDto.LastName
+            Name = newClient.Name,
+            Address = newClient.Address,
+            Mail = newClient.Mail,
+            Phone = newClient.Phone,
+            PESEL = newClient.PESEL,
+            KRS = newClient.KRS,
+            LastName = newClient.LastName
         };
 
         await _dbService.AddClient(client);
@@ -81,14 +81,23 @@ public class ClientController : ControllerBase
 
         await _dbService.RemoveIndividualClient(id);
 
-        return Ok();
+        return Ok("Client removed.");
     }
-    //
-    // [HttpPost]
-    // public async Task<IActionResult> UpdateCLient(Client client)
-    // {
-    //     
-    // }
+    
+    [HttpPost("update")]
+    public async Task<IActionResult> UpdateCLient(int id, NewClientDTO newClient)
+    {
+        var client = await _dbService.GetClientById(id);
+
+        if (client == null)
+        {
+            return BadRequest("Client with given Id doesn't exist.");
+        }
+        
+        await _dbService.UpdateClientInfo(id, newClient);
+
+        return Ok("Client updated.");
+    }
 
 
 
