@@ -5,6 +5,7 @@ namespace project.Repositories;
 
 public interface IDbService
 {
+    // Clients
     Task<bool> IsClientIndividual(int id);
     // use IsClientIndividual
     Task<bool> DoesIndividualClientExist(int? pesel);
@@ -19,4 +20,11 @@ public interface IDbService
     Task<Client?> GetClientByPesel(int pesel);
     Task<bool> IsClientDeleted(int id);
     Task UnremoveIndividualClient(int id);
+    
+    // Contracts
+    Task AddContract(Contract contract);
+    Task<bool> DoesClientHasActiveContract(Client client);
+    Task<bool> DidClientHadAnyContract(Client client);
+    Task<bool> DoesSoftwareVersionExists(int id);
+    Task<SoftwareVersion> GetSoftwareVersionById()
 }

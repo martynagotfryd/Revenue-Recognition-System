@@ -88,4 +88,29 @@ public class DbService : IDbService
     {
         throw new NotImplementedException();
     }
+
+    // Contract
+    public async Task AddContract(Contract contract)
+    {
+        await _context.AddAsync(contract);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<bool> DoesClientHasActiveContract(Client client)
+    {
+        var currentDate = DateTime.Now;
+        var activeContracts = client.Contracts.Any(c => c.Start <= currentDate || c.End >= currentDate);
+        return activeContracts;
+    }
+
+    public Task<bool> DidClientHadAnyContract(Client client)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<bool> DoesSoftwareVersionExists(int id)
+    {
+        return await _context.SoftwareVersions.AnyAsync(e => e.Id == id);
+
+    }
 }
