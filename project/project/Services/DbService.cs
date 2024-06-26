@@ -113,4 +113,31 @@ public class DbService : IDbService
         return await _context.SoftwareVersions.AnyAsync(e => e.Id == id);
 
     }
+
+    public async Task<SoftwareVersion?> GetSoftwareVersionById(int id)
+    {
+        return await _context.SoftwareVersions.FirstOrDefaultAsync(e => e.Id == id);
+
+    }
+
+    public async Task<double> GetHighestActiveDiscount(int id)
+    {
+        var softwareVersion = await _context.SoftwareVersions
+            .Include(sv => sv.Software)
+            .ThenInclude(s => s.Discounts)
+            .FirstOrDefaultAsync(sv => sv.Id == id);
+
+        var currentDate = DateTime.Now;
+        Discount? highestDiscount = null;
+        
+        if (softwareVersion != null)
+        {
+            highestDiscount = softwareVersion.Software.Discounts
+                .Where(d => d.Start <= currentDate && d.End >= currentDate)
+                .OrderByDescending(d => d.Value)
+                .FirstOrDefault();
+        } 
+        
+        return (double)highestDiscount?.Value;
+    }
 }

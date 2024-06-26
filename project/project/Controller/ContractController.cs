@@ -41,23 +41,31 @@ public class ContractController : ControllerBase
         {
             return BadRequest("Client already have active contract.");
         }
-        
-        
 
-        var price = 0;
+        var highestDiscount = await _dbService.GetHighestActiveDiscount(newContract.IdSoftwareVersion);
+
+        var softwareVersion = await _dbService.GetSoftwareVersionById(newContract.IdSoftwareVersion);
+        
+        var price = softwareVersion.Software.Cost - softwareVersion.Software.Cost*(highestDiscount / 100);
         
         if (client.Contracts.Any())
         {
-            //reduce price
+            price -= price * (5 / 100);
         }
 
         
         var contract = new Contract()
         {
-            
+            Start = newContract.Start,
+            End = newContract.End,
+            UpgradesEnd = newContract.Start.AddYears(1),
+            Price = price,
+            Signed = false,
+            IdClient = newContract.IdClient,
+            IdSoftwareVersion = newContract.IdSoftwareVersion
         };
 
-        await _dbService.AddClient(contract);
+        await _dbService.AddContract(contract);
 
         return Created();
     }

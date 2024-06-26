@@ -18,7 +18,7 @@ public class DataBaseContext : DbContext
     public DbSet<Discount> Discounts { get; set; }
     public DbSet<Payment> Payments { get; set; }
     public DbSet<Software> Softwares { get; set; }
-    public DbSet<SoftwareVersion> SoftwareVersions { get; set; }
+    public DbSet<SoftwareVersion?> SoftwareVersions { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -54,7 +54,8 @@ public class DataBaseContext : DbContext
                 Id = 1,
                 Name = "Windows",
                 Description = "abc",
-                Category = "1"
+                Category = "1",
+                Cost = 200
             }
         });
         
@@ -63,7 +64,8 @@ public class DataBaseContext : DbContext
             new SoftwareVersion()
             {
                 Id = 1,
-                Version = "10a"
+                Version = "10a",
+                IdSoftware = 1
             }
         });
 
@@ -87,6 +89,7 @@ public class DataBaseContext : DbContext
                 Id = 1,
                 Start = DateTime.Now,
                 End = DateTime.Now,
+                UpgradesEnd = DateTime.Now.AddYears(1),
                 Price = 200,
                 Signed = true,
                 IdClient = 1,

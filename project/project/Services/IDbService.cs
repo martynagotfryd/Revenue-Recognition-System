@@ -26,5 +26,6 @@ public interface IDbService
     Task<bool> DoesClientHasActiveContract(Client client);
     Task<bool> DidClientHadAnyContract(Client client);
     Task<bool> DoesSoftwareVersionExists(int id);
-    Task<SoftwareVersion> GetSoftwareVersionById()
+    Task<SoftwareVersion?> GetSoftwareVersionById(int id);
+    Task<double> GetHighestActiveDiscount(int id);
 }

@@ -10,6 +10,7 @@ public class Contract
     public int Id { get; set; }
     public DateTime Start { get; set; }
     public DateTime End { get; set; }
+    public DateTime UpgradesEnd { get; set; }
     public double Price { get; set; }
     public bool Signed { get; set; }
     public int IdClient { get; set; }

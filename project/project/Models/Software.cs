@@ -14,7 +14,8 @@ public class Software
     public string Description { get; set; } = string.Empty;
     [MaxLength(50)]
     public string Category { get; set; } = string.Empty;
+    public double Cost { get; set; }
 
     public ICollection<Discount> Discounts { get; set; } = new HashSet<Discount>();
-    public ICollection<SoftwareVersion> Contracts { get; set; } = new HashSet<SoftwareVersion>();
+    public ICollection<SoftwareVersion> SoftwareVersions { get; set; } = new HashSet<SoftwareVersion>();
 }
