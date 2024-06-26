@@ -24,8 +24,10 @@ public interface IDbService
     // Contracts
     Task AddContract(Contract contract);
     Task<bool> DoesClientHasActiveContract(Client client);
-    Task<bool> DidClientHadAnyContract(Client client);
     Task<bool> DoesSoftwareVersionExists(int id);
     Task<SoftwareVersion?> GetSoftwareVersionById(int id);
     Task<double> GetHighestActiveDiscount(int id);
+    Task SignContract(int id);
+    Task AddAdditionalServices(int id, int years);
+    Task<bool> DoesContractExist(int id);
 }

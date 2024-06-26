@@ -20,7 +20,7 @@ public class ClientController : ControllerBase
     {
         if (newClient.PESEL != null && newClient.KRS != null)
         {
-            return BadRequest("Client can be either individual or company. Put null in proper fields.");
+            return BadRequest("Client cant be both individual and company. Put null in proper fields.");
         }
         
         if (newClient.PESEL == null && newClient.KRS == null)

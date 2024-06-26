@@ -15,7 +15,7 @@ public class ContractController : ControllerBase
         _dbService = dbService;
     }
 
-    [HttpPost]
+    [HttpPost("add")]
     public async Task<IActionResult> AddNewContract(NewContractDTO newContract)
     {
         // check time range
@@ -87,4 +87,34 @@ public class ContractController : ControllerBase
         return Created();
     }
 
+    [HttpPost("sign")]
+    public async Task<IActionResult> SignContract(int id)
+    {
+        if (!await _dbService.DoesContractExist(id))
+        {
+            return BadRequest("Contract with given id doesnt exist.");
+        }
+
+        await _dbService.SignContract(id);
+
+        return Ok("Contract signed.");
+    }
+    
+    [HttpPost("additional support")]
+    public async Task<IActionResult> AddNewContract(int id, int years)
+    {
+        if (!await _dbService.DoesContractExist(id))
+        {
+            return BadRequest("Contract with given id doesnt exist.");
+        }
+
+        if (years != 1 && years != 2 && years != 3)
+        {
+            return BadRequest("You can only extend support by 1,2 or 3 years.");
+        }
+
+        await _dbService.AddAdditionalServices(id, years);
+
+        return Ok("Additional support added to contract.");
+    }
 }

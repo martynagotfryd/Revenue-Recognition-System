@@ -102,11 +102,7 @@ public class DbService : IDbService
         var activeContracts = client.Contracts.Any(c => c.Start <= currentDate || c.End >= currentDate);
         return activeContracts;
     }
-
-    public Task<bool> DidClientHadAnyContract(Client client)
-    {
-        throw new NotImplementedException();
-    }
+    
 
     public async Task<bool> DoesSoftwareVersionExists(int id)
     {
@@ -146,5 +142,35 @@ public class DbService : IDbService
         {
             return 0;
         }
+    }
+
+    public async Task SignContract(int id)
+    {
+        var contract = await _context.Contracts.FindAsync(id);
+        
+        if (contract != null) contract.Signed = true;
+
+        _context.Contracts.Update(contract);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task AddAdditionalServices(int id, int years)
+    {
+        var contract = await _context.Contracts.FindAsync(id);
+
+        if (contract != null)
+        {
+            contract.UpgradesEnd = contract.UpgradesEnd.AddYears(years);
+            contract.Price += years * 1000;
+        }
+
+        _context.Contracts.Update(contract);
+        await _context.SaveChangesAsync();
+        
+    }
+
+    public async Task<bool> DoesContractExist(int id)
+    {
+        return await _context.Contracts.AnyAsync(e => e.Id == id);
     }
 }
