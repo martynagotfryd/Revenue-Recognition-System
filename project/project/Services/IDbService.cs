@@ -30,4 +30,5 @@ public interface IDbService
     Task SignContract(int id);
     Task AddAdditionalServices(int id, int years);
     Task<bool> DoesContractExist(int id);
+    Task RemoveContract(int id);
 }

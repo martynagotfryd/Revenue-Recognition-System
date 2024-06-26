@@ -173,4 +173,13 @@ public class DbService : IDbService
     {
         return await _context.Contracts.AnyAsync(e => e.Id == id);
     }
+
+    public async Task RemoveContract(int id)
+    {
+        var contract = await _context.Contracts.FindAsync(id);
+
+        _context.Contracts.Remove(contract);
+        await _context.SaveChangesAsync();
+
+    }
 }

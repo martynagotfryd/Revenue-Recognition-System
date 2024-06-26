@@ -117,4 +117,17 @@ public class ContractController : ControllerBase
 
         return Ok("Additional support added to contract.");
     }
+    
+    [HttpDelete("remove")]
+    public async Task<IActionResult> RemoveContract(int id)
+    {
+        if (!await _dbService.DoesContractExist(id))
+        {
+            return BadRequest("Contract with given id doesnt exist.");
+        }
+
+        await _dbService.RemoveContract(id);
+
+        return Ok("Contract Deleted.");
+    }
 }
