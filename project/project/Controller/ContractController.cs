@@ -41,9 +41,9 @@ public class ContractController : ControllerBase
         }
         
         // check if client has active contact
-        if (await _dbService.DoesClientHasActiveContract(client))
+        if (!await _dbService.DoesClientHasActiveContract(client, newContract.Start, newContract.End))
         {
-            return BadRequest("Client already have active contract.");
+            return BadRequest("Client already have active contract in those dates.");
         }
 
         // get highest discount for given software if there is any

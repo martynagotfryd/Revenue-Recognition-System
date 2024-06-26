@@ -96,10 +96,9 @@ public class DbService : IDbService
         await _context.SaveChangesAsync();
     }
 
-    public async Task<bool> DoesClientHasActiveContract(Client client)
+    public async Task<bool> DoesClientHasActiveContract(Client client, DateTime strat, DateTime end)
     {
-        var currentDate = DateTime.Now;
-        var activeContracts = client.Contracts.Any(c => c.Start <= currentDate || c.End >= currentDate);
+        var activeContracts = client.Contracts.Any(c => c.Start <= end || c.End >= strat);
         return activeContracts;
     }
     
