@@ -2,8 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using project.Data;
 using project.DTOs;
 using project.Models;
+using project.Repositories;
 
-namespace project.Repositories;
+namespace project.Services;
 
 public class DbService : IDbService
 {
@@ -206,38 +207,31 @@ public class DbService : IDbService
 
     public async Task<double> GetRevenue(int? id)
     {
-        var contracts = _context.Contracts
-            .Include(c => c.Payments)
-            .Include(c => c.SoftwareVersion)
-            .ThenInclude(sv => sv.Software)
-            .AsQueryable();
+        var contracts = _context.Contracts.AsQueryable();
 
-        if (id.HasValue)
+        if (id != null)
         {
-            contracts = contracts.Where(c => c.SoftwareVersion.IdSoftware == id.Value);
+            contracts = contracts.Where(c => c.SoftwareVersion.IdSoftware == id);
         }
 
-        double totalPaidPayments = await contracts
+        double revenue = await contracts
             .SelectMany(c => c.Payments)
             .SumAsync(p => p.Value);
 
-        return totalPaidPayments;
+        return revenue;
     }
 
     public async Task<double> GetPredictedRevenue(int? id)
     {
-        var contracts = _context.Contracts
-            .Include(c => c.SoftwareVersion)
-            .ThenInclude(sv => sv.Software)
-            .AsQueryable();
+        var contracts = _context.Contracts.AsQueryable();
 
-        if (id.HasValue)
+        if (id != null)
         {
-            contracts = contracts.Where(c => c.SoftwareVersion.IdSoftware == id.Value);
+            contracts = contracts.Where(c => c.SoftwareVersion.IdSoftware == id);
         }
 
-        double totalPredictedPayments = await contracts.SumAsync(c => c.Price);
+        double revenue = await contracts.SumAsync(c => c.Price);
 
-        return totalPredictedPayments;
+        return revenue;
     }
 }
