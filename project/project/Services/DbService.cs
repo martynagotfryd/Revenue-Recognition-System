@@ -96,9 +96,10 @@ public class DbService : IDbService
         await _context.SaveChangesAsync();
     }
 
-    public async Task<bool> DoesClientHasActiveContract(Client client, DateTime strat, DateTime end)
+    public async Task<bool> DoesClientHasActiveContract(Client client, DateTime strat, DateTime end, int softwareVersion)
     {
-        var activeContracts = client.Contracts.Any(c => c.Start <= end || c.End >= strat);
+        
+        var activeContracts = client.Contracts.Any(c => c.Signed);
         return activeContracts;
     }
     
@@ -143,14 +144,17 @@ public class DbService : IDbService
         }
     }
 
-    public async Task SignContract(int id)
+    public async Task SignContract(Contract contract)
     {
-        var contract = await _context.Contracts.FindAsync(id);
-        
-        if (contract != null) contract.Signed = true;
+        double totalPaymentsValue = contract.Payments.Sum(p => p.Value);
 
-        _context.Contracts.Update(contract);
-        await _context.SaveChangesAsync();
+        if (contract.Price <= totalPaymentsValue)
+        {
+            contract.Signed = true;
+
+            _context.Contracts.Update(contract);
+            await _context.SaveChangesAsync();
+        }
     }
 
     public async Task AddAdditionalServices(int id, int years)
@@ -179,6 +183,18 @@ public class DbService : IDbService
 
         _context.Contracts.Remove(contract);
         await _context.SaveChangesAsync();
+
+    }
+
+    public async Task Pay(Payment payment)
+    {
+        await _context.AddAsync(payment);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<Contract?> GetContractById(int id)
+    {
+        return await _context.Contracts.FirstOrDefaultAsync(e => e.Id == id);
 
     }
 }

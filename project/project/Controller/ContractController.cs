@@ -40,11 +40,11 @@ public class ContractController : ControllerBase
             return BadRequest("Client with given Id doesn't exist.");
         }
         
-        // check if client has active contact
-        if (!await _dbService.DoesClientHasActiveContract(client, newContract.Start, newContract.End))
-        {
-            return BadRequest("Client already have active contract in those dates.");
-        }
+        // // check if client has active contact
+        // if (await _dbService.DoesClientHasActiveContract(client, newContract.Start, newContract.End, newContract.IdSoftwareVersion))
+        // {
+        //     return BadRequest("Client already have active contract in those dates.");
+        // }
 
         // get highest discount for given software if there is any
         var highestDiscount = await _dbService.GetHighestActiveDiscount(newContract.IdSoftwareVersion);
@@ -67,7 +67,8 @@ public class ContractController : ControllerBase
         // check if there is discount for previous clients
         if (client.Contracts.Any())
         {
-            price -= price * (5 / 100);
+            var newPrice = price - price * 0.05;
+            price = newPrice;
         }
 
         // add new contract
@@ -87,17 +88,36 @@ public class ContractController : ControllerBase
         return Created();
     }
 
-    [HttpPost("sign")]
-    public async Task<IActionResult> SignContract(int id)
+    [HttpPost("pay")]
+    public async Task<IActionResult> SignContract(NewPaymentDTO paymentDto)
     {
-        if (!await _dbService.DoesContractExist(id))
+        var contract = await _dbService.GetContractById(paymentDto.IdContract);
+
+        if (contract == null)
         {
             return BadRequest("Contract with given id doesnt exist.");
         }
+        
+        if (contract.Signed)
+        {
+            return BadRequest("Contract is already paid.");
+        }
 
-        await _dbService.SignContract(id);
+        if (contract.End < DateTime.Now)
+        {
+            return BadRequest("Contract is expired.");
+        }
 
-        return Ok("Contract signed.");
+        var payment = new Payment()
+        {
+            IdContract = paymentDto.IdContract,
+            Value = paymentDto.Value
+        };
+
+        await _dbService.Pay(payment);
+        await _dbService.SignContract(contract);
+    
+        return Ok("Payment made.");
     }
     
     [HttpPost("additional support")]
