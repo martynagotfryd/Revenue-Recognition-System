@@ -136,8 +136,15 @@ public class DbService : IDbService
                 .Where(d => d.Start <= currentDate && d.End >= currentDate)
                 .OrderByDescending(d => d.Value)
                 .FirstOrDefault();
-        } 
-        
-        return (double)highestDiscount?.Value;
+        }
+
+        if (highestDiscount != null)
+        {
+            return highestDiscount.Value;
+        }
+        else
+        {
+            return 0;
+        }
     }
 }
