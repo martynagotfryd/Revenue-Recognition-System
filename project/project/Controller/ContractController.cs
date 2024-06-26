@@ -150,4 +150,36 @@ public class ContractController : ControllerBase
 
         return Ok("Contract Deleted.");
     }
+
+    [HttpGet("revenue")]
+    public async Task<IActionResult> CalculateRevenue(int? idSoftWare)
+    {
+        if (idSoftWare != null)
+        {
+            if (!await _dbService.DoesSoftwareExist(idSoftWare))
+            {
+                return BadRequest("Software with given id doesnt exist.");
+            }
+        }
+
+        var revenue = await _dbService.GetRevenue(idSoftWare);
+
+        return Ok(revenue);
+    }
+    
+    [HttpGet("predicted revenue")]
+    public async Task<IActionResult> CalculatePredictedRevenue(int? idSoftWare)
+    {
+        if (idSoftWare != null)
+        {
+            if (!await _dbService.DoesSoftwareExist(idSoftWare))
+            {
+                return BadRequest("Software with given id doesnt exist.");
+            }
+        }
+        
+        var revenue = await _dbService.GetPredictedRevenue(idSoftWare);
+
+        return Ok(revenue);
+    }
 }

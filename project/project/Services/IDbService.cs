@@ -33,4 +33,8 @@ public interface IDbService
     Task RemoveContract(int id);
     Task Pay(Payment payment);
     Task<Contract?> GetContractById(int id);
+    Task<bool> DoesSoftwareExist(int? id);
+    Task<double> GetRevenue(int? id);
+    Task<double> GetPredictedRevenue(int? id);
+
 }

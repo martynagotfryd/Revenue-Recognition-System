@@ -197,4 +197,47 @@ public class DbService : IDbService
         return await _context.Contracts.FirstOrDefaultAsync(e => e.Id == id);
 
     }
+
+    public async Task<bool> DoesSoftwareExist(int? id)
+    {
+        return await _context.Softwares.AnyAsync(e => e.Id == id);
+
+    }
+
+    public async Task<double> GetRevenue(int? id)
+    {
+        var contracts = _context.Contracts
+            .Include(c => c.Payments)
+            .Include(c => c.SoftwareVersion)
+            .ThenInclude(sv => sv.Software)
+            .AsQueryable();
+
+        if (id.HasValue)
+        {
+            contracts = contracts.Where(c => c.SoftwareVersion.IdSoftware == id.Value);
+        }
+
+        double totalPaidPayments = await contracts
+            .SelectMany(c => c.Payments)
+            .SumAsync(p => p.Value);
+
+        return totalPaidPayments;
+    }
+
+    public async Task<double> GetPredictedRevenue(int? id)
+    {
+        var contracts = _context.Contracts
+            .Include(c => c.SoftwareVersion)
+            .ThenInclude(sv => sv.Software)
+            .AsQueryable();
+
+        if (id.HasValue)
+        {
+            contracts = contracts.Where(c => c.SoftwareVersion.IdSoftware == id.Value);
+        }
+
+        double totalPredictedPayments = await contracts.SumAsync(c => c.Price);
+
+        return totalPredictedPayments;
+    }
 }
