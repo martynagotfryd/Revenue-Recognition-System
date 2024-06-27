@@ -15,6 +15,7 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<DataBaseContext>(
     options => options.UseSqlServer("Name=ConnectionStrings:Default"));
 
+builder.Services.AddHttpClient<CurrencyService>();
 builder.Services.AddScoped<IDbService, DbService>();
 
 var app = builder.Build();

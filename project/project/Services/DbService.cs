@@ -9,9 +9,13 @@ namespace project.Services;
 public class DbService : IDbService
 {
     private readonly DataBaseContext _context;
-    public DbService(DataBaseContext context)
+    private readonly CurrencyService _currencyService;
+
+    public DbService(DataBaseContext context, CurrencyService currencyService)
     {
         _context = context;
+        _currencyService = currencyService;
+
     }
     
     public async Task<bool> IsClientIndividual(int id)
@@ -205,7 +209,7 @@ public class DbService : IDbService
 
     }
 
-    public async Task<double> GetRevenue(int? id)
+    public async Task<double> GetRevenue(int? id, string? currency = null)
     {
         var contracts = _context.Contracts.AsQueryable();
 
@@ -218,10 +222,16 @@ public class DbService : IDbService
             .SelectMany(c => c.Payments)
             .SumAsync(p => p.Value);
 
+        if (currency != null && currency != "PLN")
+        {
+            decimal exchangeRate = await _currencyService.GetExchangeRateAsync(currency);
+            revenue *= (double)exchangeRate;
+        }
+
         return revenue;
     }
 
-    public async Task<double> GetPredictedRevenue(int? id)
+    public async Task<double> GetPredictedRevenue(int? id, string? currency = null)
     {
         var contracts = _context.Contracts.AsQueryable();
 
@@ -231,6 +241,12 @@ public class DbService : IDbService
         }
 
         double revenue = await contracts.SumAsync(c => c.Price);
+
+        if (currency != null && currency != "PLN")
+        {
+            decimal exchangeRate = await _currencyService.GetExchangeRateAsync(currency);
+            revenue *= (double)exchangeRate;
+        }
 
         return revenue;
     }

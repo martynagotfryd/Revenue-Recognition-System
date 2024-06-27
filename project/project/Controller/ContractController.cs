@@ -152,7 +152,7 @@ public class ContractController : ControllerBase
     }
 
     [HttpGet("revenue")]
-    public async Task<IActionResult> CalculateRevenue(int? idSoftWare)
+    public async Task<IActionResult> CalculateRevenue(int? idSoftWare, string? currency)
     {
         if (idSoftWare != null)
         {
@@ -162,13 +162,13 @@ public class ContractController : ControllerBase
             }
         }
 
-        var revenue = await _dbService.GetRevenue(idSoftWare);
+        var revenue = await _dbService.GetRevenue(idSoftWare, currency);
 
         return Ok(revenue);
     }
     
     [HttpGet("predicted revenue")]
-    public async Task<IActionResult> CalculatePredictedRevenue(int? idSoftWare)
+    public async Task<IActionResult> CalculatePredictedRevenue(int? idSoftWare, string? currency)
     {
         if (idSoftWare != null)
         {
@@ -178,7 +178,7 @@ public class ContractController : ControllerBase
             }
         }
         
-        var revenue = await _dbService.GetPredictedRevenue(idSoftWare);
+        var revenue = await _dbService.GetPredictedRevenue(idSoftWare, currency);
 
         return Ok(revenue);
     }
