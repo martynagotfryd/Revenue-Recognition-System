@@ -2,7 +2,6 @@ using System;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 
 namespace project.Services
 {
@@ -27,7 +26,10 @@ namespace project.Services
             }
 
             var jsonResponse = await response.Content.ReadAsStringAsync();
-            var exchangeRateResponse = JsonSerializer.Deserialize<NbpExchangeRateResponse>(jsonResponse);
+            var exchangeRateResponse = JsonSerializer.Deserialize<NbpExchangeRateResponse>(jsonResponse, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
 
             if (exchangeRateResponse == null || exchangeRateResponse.Rates == null || exchangeRateResponse.Rates.Length == 0)
             {
