@@ -76,7 +76,7 @@ public class DbService : IDbService
 
     public async Task<Client?> GetClientById(int id)
     {
-        return await _context.Clients.FirstOrDefaultAsync(e => e.Id == id);
+        return await _context.Clients.Include(e => e.Contracts).FirstOrDefaultAsync(e => e.Id == id);
     }
 
     public Task<Client?> GetClientByPesel(int pesel)
@@ -101,10 +101,9 @@ public class DbService : IDbService
         await _context.SaveChangesAsync();
     }
 
-    public async Task<bool> DoesClientHasActiveContract(Client client, DateTime strat, DateTime end, int softwareVersion)
+    public async Task<bool> DoesClientHasActiveContract(Client client, DateTime start, DateTime end, int softwareVersion)
     {
-        
-        var activeContracts = client.Contracts.Any(c => c.Signed);
+        var activeContracts = client.Contracts.Any(c => !c.Signed && start >= c.Start && start <= c.End && c.IdSoftwareVersion == softwareVersion);
         return activeContracts;
     }
     

@@ -41,10 +41,10 @@ public class ContractController : ControllerBase
         }
         
         // // check if client has active contact
-        // if (await _dbService.DoesClientHasActiveContract(client, newContract.Start, newContract.End, newContract.IdSoftwareVersion))
-        // {
-        //     return BadRequest("Client already have active contract in those dates.");
-        // }
+        if (await _dbService.DoesClientHasActiveContract(client, newContract.Start, newContract.End, newContract.IdSoftwareVersion))
+        {
+            return BadRequest("Client already have active contract in those dates.");
+        }
 
         // get highest discount for given software if there is any
         var highestDiscount = await _dbService.GetHighestActiveDiscount(newContract.IdSoftwareVersion);
