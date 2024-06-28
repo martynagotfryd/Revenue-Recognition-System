@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using project.Models;
 
@@ -13,6 +14,7 @@ public class DataBaseContext : DbContext
     {
     }
 
+    public DbSet<Employee> Users { get; set; }
     public DbSet<Client> Clients { get; set; }
     public DbSet<Contract?> Contracts { get; set; }
     public DbSet<Discount> Discounts { get; set; }
@@ -24,6 +26,25 @@ public class DataBaseContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
     
+        modelBuilder.Entity<Employee>().HasData(new List<Employee>
+        {
+            new Employee()
+            {
+                Id = 1,
+                Login = "admin",
+                Password = "admin",
+                Role = "admin"
+            },
+            new Employee()
+            {
+                Id = 2,
+                Login = "normal",
+                Password = "normal",
+                Role = "normal"
+            }
+        });
+
+        
         modelBuilder.Entity<Client>().HasData(new List<Client>
         {
             new Client

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using project.Data;
 using project.DTOs;
@@ -248,5 +249,41 @@ public class DbService : IDbService
         }
 
         return revenue;
+    }
+
+    public async Task<bool> RegisterUser(string login, string password, string role)
+    {
+        if (await _context.Users.AnyAsync(e => e.Login == login))
+            return false;
+
+        var passwordHasher = new PasswordHasher<Employee>();
+        
+        var employee = new Employee
+        {
+            Login = login,
+            Password = passwordHasher.HashPassword(new Employee(), password),
+            Role = role
+        };
+
+        _context.Users.Add(employee);
+        await _context.SaveChangesAsync();
+
+        return true;
+    }
+
+    public async Task<Employee?> ValidateUser(string login, string password)
+    {
+        var passwordHasher = new PasswordHasher<Employee>();
+
+        var employee = await _context.Users.SingleOrDefaultAsync(e => e.Login == login);
+        if (employee == null)
+            return null;
+
+        if (passwordHasher.VerifyHashedPassword(new Employee(), employee.Password, password) == PasswordVerificationResult.Success)
+        {
+            return employee;
+        }
+
+        return null;
     }
 }

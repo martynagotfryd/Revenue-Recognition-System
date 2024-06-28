@@ -36,5 +36,6 @@ public interface IDbService
     Task<bool> DoesSoftwareExist(int? id);
     Task<double> GetRevenue(int? id, string? currency = null);
     Task<double> GetPredictedRevenue(int? id, string? currency = null);
-
+    Task<bool> RegisterUser(string login, string password, string role);
+    Task<Employee?> ValidateUser(string login, string password);
 }

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using project.DTOs;
 using project.Models;
@@ -15,6 +16,7 @@ public class ContractController : ControllerBase
         _dbService = dbService;
     }
 
+    [Authorize]
     [HttpPost("add")]
     public async Task<IActionResult> AddNewContract(NewContractDTO newContract)
     {
@@ -88,6 +90,7 @@ public class ContractController : ControllerBase
         return Created();
     }
 
+    [Authorize]
     [HttpPost("pay")]
     public async Task<IActionResult> SignContract(NewPaymentDTO paymentDto)
     {
@@ -120,6 +123,7 @@ public class ContractController : ControllerBase
         return Ok("Payment made.");
     }
     
+    [Authorize]
     [HttpPost("additional support")]
     public async Task<IActionResult> AddNewContract(int id, int years)
     {
@@ -138,6 +142,7 @@ public class ContractController : ControllerBase
         return Ok("Additional support added to contract.");
     }
     
+    [Authorize]
     [HttpDelete("remove")]
     public async Task<IActionResult> RemoveContract(int id)
     {
@@ -151,6 +156,7 @@ public class ContractController : ControllerBase
         return Ok("Contract Deleted.");
     }
 
+    [Authorize]
     [HttpGet("revenue")]
     public async Task<IActionResult> CalculateRevenue(int? idSoftWare, string? currency)
     {
@@ -167,6 +173,7 @@ public class ContractController : ControllerBase
         return Ok(revenue);
     }
     
+    [Authorize]
     [HttpGet("predicted revenue")]
     public async Task<IActionResult> CalculatePredictedRevenue(int? idSoftWare, string? currency)
     {

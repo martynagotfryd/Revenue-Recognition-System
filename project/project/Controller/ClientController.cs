@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using project.DTOs;
 using project.Models;
@@ -15,6 +16,7 @@ public class ClientController : ControllerBase
         _dbService = dbService;
     }
 
+    [Authorize]
     [HttpPost("add")]
     public async Task<IActionResult> AddNewClient(NewClientDTO newClient)
     {
@@ -64,6 +66,7 @@ public class ClientController : ControllerBase
         return Created();
     }
 
+    [Authorize(Roles = "admin")]
     [HttpPost("remove")]
     public async Task<IActionResult> RemoveClient(int id)
     {
@@ -84,6 +87,7 @@ public class ClientController : ControllerBase
         return Ok("Client removed.");
     }
     
+    [Authorize(Roles = "admin")]
     [HttpPost("update")]
     public async Task<IActionResult> UpdateCLient(int id, NewClientDTO newClient)
     {
