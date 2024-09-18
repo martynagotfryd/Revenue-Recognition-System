@@ -46,14 +46,31 @@ Once the application is running, you can manage clients, software licenses, cont
 Here are some example API endpoints:
 
 1. Client Management
-Add a client: `POST /api/clients`
-Update a client: `PUT /api/clients/{id}`
-Remove a client (soft delete): `DELETE /api/clients/{id}`
+- Add a client: `POST /api/clients`
+- Update a client: `PUT /api/clients/{id}`
+- Remove a client (soft delete): `DELETE /api/clients/{id}`
 
 2. Contracts
-Create a contract: `POST /api/contracts`
-Pay for a contract: `POST /api/contracts/{id}/pay`
+- Create a contract: `POST /api/contracts`
+- Pay for a contract: `POST /api/contracts/{id}/pay`
 
 3. Revenue Calculation
-Calculate current revenue: `GET /api/revenue/current`
-Calculate predicted revenue: `GET /api/revenue/predicted`
+- Calculate current revenue: `GET /api/revenue/current`
+- Calculate predicted revenue: `GET /api/revenue/predicted`
+
+## Testing
+To run unit tests:
+
+```
+dotnet test
+```
+
+Unit tests focus on business logic for client management, contract creation, revenue recognition, and other core functionalities.
+
+## Technologies Used
+- .NET Core
+-Entity Framework Core
+- SQL Server
+- Swagger for API documentation and testing
+- XUnit for unit testing
+- REST API architecture
